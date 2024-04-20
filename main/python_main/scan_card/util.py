@@ -4,11 +4,17 @@ from spacy.matcher import Matcher
 from python_main.scan_card.config import JOB_PATTERN, NAME_PATTERN, DIM_RESIZE_IMG, GUSSAIN_KIRNEL_ZISE
 import cv2 as cv
 
+
 class ImageHandler():
     
     @staticmethod
     def resize_img(image):
         image = cv.resize(image, DIM_RESIZE_IMG)
+        return image
+    
+    @staticmethod
+    def convert2grey(image):
+        image = cv.cvtColor(image, cv.COLOR_BGR2GRAY) 
         return image
     
     @staticmethod
@@ -22,10 +28,13 @@ class TextHandler():
     
     @staticmethod
     def text_extractor(reader, image):
-        result = reader.readtext(image)
+
+        # result = reader.readtext(image)
+        result = reader.ocr(image, cls=True)[0]
         text = []
+        # print(result)
         for i in result:
-            text.append(i[-2])
+            text.append(i[-1][0])
 
         return '\t'.join(text)
 
